@@ -1,26 +1,25 @@
+#pragma once
+
 #include <opencv2/dnn.hpp>
 
 class FaceDetector {
 public:
-    explicit FaceDetector();
+    FaceDetector();
 
-    /// Detect faces in an image frame
-    /// \param frame Image to detect faces in
-    /// \return Vector of detected faces
     std::vector<cv::Rect> detect_face_rectangles(const cv::Mat& frame);
 
 private:
     /// Face detection network
-    cv::dnn::Net network_;
+    cv::dnn::Net _network;
     /// Input image width
-    const int input_image_width_;
+    const int _input_image_width;
     /// Input image height
-    const int input_image_height_;
+    const int _input_image_height;
     /// Scale factor when creating image blob
-    const double scale_factor_;
+    const double _scale_factor;
     /// Mean normalization values network was trained with
-    const cv::Scalar mean_values_;
+    const cv::Scalar _mean_values;
     /// Face detection confidence threshold
-    const float confidence_threshold_;
+    const float _confidence_threshold;
 
 };

@@ -4,10 +4,10 @@
 
 #include "face_detector.h"
 
-FaceDetector::FaceDetector() : confidence_threshold_(0.5), input_image_height_(300), input_image_width_(300),
-scale_factor_(1.0), mean_values_({ 104., 177.0, 123.0 }) {
+FaceDetector::FaceDetector() : _confidence_threshold(0.5), _input_image_height(300), _input_image_width(300),
+_scale_factor(1.0), _mean_values({ 104., 177.0, 123.0 }) {
 
-    network_ = cv::dnn::readNetFromCaffe(FACE_DETECTION_CONFIGURATION, FACE_DETECTION_WEIGHTS);
+    _network = cv::dnn::readNetFromCaffe(FACE_DETECTION_CONFIGURATION, FACE_DETECTION_WEIGHTS);
 
     // Note: The varibles MODEL_CONFIGURATION_FILE and MODEL_WEIGHTS_FILE are passed(network_.empty()) {
         //std::ostringstream ss;
@@ -19,10 +19,10 @@ scale_factor_(1.0), mean_values_({ 104., 177.0, 123.0 }) {
 
 
 std::vector<cv::Rect> FaceDetector::detect_face_rectangles(const cv::Mat& frame) {
-    cv::Mat input_blob = cv::dnn::blobFromImage(frame, scale_factor_, cv::Size(input_image_width_, input_image_height_),
-        mean_values_, false, false);
-    network_.setInput(input_blob, "data");
-    cv::Mat detection = network_.forward("detection_out");
+    cv::Mat input_blob = cv::dnn::blobFromImage(frame, _scale_factor, cv::Size(_input_image_width, _input_image_height),
+        _mean_values, false, false);
+    _network.setInput(input_blob, "data");
+    cv::Mat detection = _network.forward("detection_out");
     cv::Mat detection_matrix(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
 
     std::vector<cv::Rect> faces;
@@ -30,7 +30,7 @@ std::vector<cv::Rect> FaceDetector::detect_face_rectangles(const cv::Mat& frame)
     for (int i = 0; i < detection_matrix.rows; i++) {
         float confidence = detection_matrix.at<float>(i, 2);
 
-        if (confidence < confidence_threshold_) {
+        if (confidence < _confidence_threshold) {
             continue;
         }
         int x_left_bottom = static_cast<int>(detection_matrix.at<float>(i, 3) * frame.cols);
