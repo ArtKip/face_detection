@@ -7,7 +7,7 @@
 
 TEST(FaceDetectorTest, ComparePreparedFaces)
 {
-    const auto files = PathManager::get_all("../test_data", ".jpg");
+    const auto files = PathManager::get_all("../", ".jpg");
 
     ASSERT_TRUE(files.size() > 0);
 
@@ -29,7 +29,6 @@ TEST(FaceDetectorTest, ComparePreparedFaces)
         }
         if (file.filename().string() == "man.jpg")
         {
-            std::cout << faces.at(0) << std::endl;
             ASSERT_EQ(faces.size(), 1);
             ASSERT_NEAR(faces.at(0).x, 119, abs_error);
             ASSERT_NEAR(faces.at(0).y, 30, abs_error);

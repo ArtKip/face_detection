@@ -1,21 +1,17 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
-#include <filesystem>
 
 #include "face_detector.h"
 
-FaceDetector::FaceDetector() : _confidence_threshold(0.5), _input_image_height(300), _input_image_width(300),
-_scale_factor(1.0), _mean_values({ 104., 177.0, 123.0 }) {
-
+FaceDetector::FaceDetector() 
+    : _confidence_threshold(0.5),
+    _input_image_height(300),
+    _input_image_width(300),
+    _scale_factor(1.0),
+    _mean_values({ 104., 177.0, 123.0 }) 
+{
     _network = cv::dnn::readNetFromCaffe(FACE_DETECTION_CONFIGURATION, FACE_DETECTION_WEIGHTS);
-
-    // Note: The varibles MODEL_CONFIGURATION_FILE and MODEL_WEIGHTS_FILE are passed(network_.empty()) {
-        //std::ostringstream ss;
-        //ss << "Failed to load network with the following settings:\n"
-        //    << "Configuration: " + std::string(FACE_DETECTION_CONFIGURATION) + "\n"
-        //    << "Binary: " + std::string(FACE_DETECTION_WEIGHTS) + "\n";
-        //throw std::invalid_argument(ss.str());
-    }
+}
 
 
 std::vector<cv::Rect> FaceDetector::detect_face_rectangles(const cv::Mat& frame) {

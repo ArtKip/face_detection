@@ -7,7 +7,7 @@ find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 add_definitions(-DBOOST_ALL_NO_LIB)
-find_package(Boost REQUIRED COMPONENTS filesystem regex) 
+find_package(Boost REQUIRED COMPONENTS filesystem) 
 
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
@@ -29,7 +29,9 @@ set(source_files
 	src/image_processor.cpp
 	src/path_manager.cpp
     )
+
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath='\$ORIGIN'")
 
 add_library(face_detect_lib SHARED src/face_detector.cpp src/face_detector.h)
 target_link_libraries(face_detect_lib PUBLIC ${OpenCV_LIBS})
