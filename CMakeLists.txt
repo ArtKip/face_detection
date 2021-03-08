@@ -33,11 +33,11 @@ set(source_files
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath='\$ORIGIN'")
 
-add_library(face_detect_lib SHARED src/face_detector.cpp src/face_detector.h)
-target_link_libraries(face_detect_lib PUBLIC ${OpenCV_LIBS})
+add_library(face_detection SHARED src/face_detector.cpp src/face_detector.h)
+target_link_libraries(face_detection PUBLIC ${OpenCV_LIBS})
 
 add_executable(face_detector_tool ${source_files} ${header_files})
-target_link_libraries(face_detector_tool PRIVATE face_detect_lib ${Boost_LIBRARIES}) 
+target_link_libraries(face_detector_tool PRIVATE face_detection ${Boost_LIBRARIES}) 
 
 set(FACE_DETECTION_CONFIGURATION "${PROJECT_SOURCE_DIR}/assets/deploy.prototxt")
 set(FACE_DETECTION_WEIGHTS "${PROJECT_SOURCE_DIR}/assets/res10_300x300_ssd_iter_140000_fp16.caffemodel")
@@ -45,8 +45,8 @@ set(FACE_DETECTION_WEIGHTS "${PROJECT_SOURCE_DIR}/assets/res10_300x300_ssd_iter_
 target_compile_definitions(face_detector_tool PRIVATE FACE_DETECTION_CONFIGURATION="${FACE_DETECTION_CONFIGURATION}")
 target_compile_definitions(face_detector_tool PRIVATE FACE_DETECTION_WEIGHTS="${FACE_DETECTION_WEIGHTS}")
 
-target_compile_definitions(face_detect_lib PRIVATE FACE_DETECTION_CONFIGURATION="${FACE_DETECTION_CONFIGURATION}")
-target_compile_definitions(face_detect_lib PRIVATE FACE_DETECTION_WEIGHTS="${FACE_DETECTION_WEIGHTS}")
+target_compile_definitions(face_detection  PRIVATE FACE_DETECTION_CONFIGURATION="${FACE_DETECTION_CONFIGURATION}")
+target_compile_definitions(face_detection  PRIVATE FACE_DETECTION_WEIGHTS="${FACE_DETECTION_WEIGHTS}")
 
 
 
@@ -67,7 +67,7 @@ if (NOT googletest_POPULATED)
     add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
 endif ()
 
-file(COPY test_data/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/test_data/)
+file(COPY bin/test_data/ DESTINATION ${CMAKE_BINARY_DIR}/test_data/)
 
 # Prevent overriding the parent project's compiler/linker
 # settings on Windows
@@ -86,4 +86,4 @@ set(test_source_files
     )
 
 add_executable(face_detect_tests ${test_header_files} ${test_source_files})
-target_link_libraries(face_detect_tests PRIVATE face_detect_lib gtest_main ${Boost_LIBRARIES})
+target_link_libraries(face_detect_tests PRIVATE face_detection gtest_main ${Boost_LIBRARIES})

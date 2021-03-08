@@ -7,7 +7,8 @@
 
 TEST(FaceDetectorTest, ComparePreparedFaces)
 {
-    const auto files = PathManager::get_all("../", ".jpg");
+    PathManager path_manager("../");
+    const auto files = path_manager.get_all(std::vector<std::string>{".jpg"});
 
     ASSERT_TRUE(files.size() > 0);
 

@@ -6,16 +6,23 @@
 #include "json_results_saver.h"
 #include "path_manager.h"
 
+using namespace std;
+
 int main(int argc, char** argv)
 {
-    std::cout << "Enter path of folder with images having .jpg extension: " << std::endl;
+    cout << "Enter path of folder with images having .jpg or .png extension: " << endl;
 
-    std::string input_dir_path;
-    std::getline(std::cin, input_dir_path);
+    string input_dir_path;
+    getline(cin, input_dir_path);
 
-    const auto files = PathManager::get_all(input_dir_path, ".jpg");
+    PathManager path_manager(input_dir_path);
+    if (!path_manager.is_correct())
+    {
+        cout << "incorect direcory path " << input_dir_path << endl;
+        return 0;
+    }
 
-    PathManager path_manager("output");
+    const auto files = path_manager.get_all(vector<string>{".png", ".jpg"});
 
     JsonResultsSaver json_writer(path_manager.get_filename_in_output_directory("results.json"));
 
@@ -26,22 +33,22 @@ int main(int argc, char** argv)
         try
         {
             ImageProcessor image_processor(file.string(), face_detector);
-
             image_processor.process_image();
 
-            image_processor.save_processed_image(path_manager.get_filename_in_output_directory(file.filename().string()));
+            const auto processed_image_path = path_manager.get_processed_image_path(file.filename().string());
+            image_processor.save_processed_image(processed_image_path);
 
-            json_writer.append_image_with_rectangles(file.filename().string(), image_processor.get_face_rectangles());
+            json_writer.append_image_with_rectangles(processed_image_path, image_processor.get_face_rectangles());
 
+            cout << image_processor.get_face_rectangles().size() << " faces found on image " << file.string() << endl;
         }
         catch (...)
         {
-            std::cout << "failed to process " << file.filename().string() << std::endl;
+            cout << "failed to process " << file.filename().string() << endl;
         }
     }
         
-    json_writer.write_to_file();
-    
+    json_writer.write_to_file();   
 
     return 0;
 }

@@ -13,10 +13,14 @@ void JsonResultsSaver::append_image_with_rectangles(const std::string& imagename
 
     for (int i = 0; i < rectangles.size(); ++i) 
     {
-        data["Rect_" + std::to_string(i) + ".X"] = rectangles[i].x;
-        data["Rect_" + std::to_string(i) + ".Y"] = rectangles[i].y;
-        data["Rect_" + std::to_string(i) + ".Width"] = rectangles[i].width;
-        data["Rect_" + std::to_string(i) + ".Height"] = rectangles[i].height;
+        Json::Value rect;
+
+        rect["x"] = rectangles[i].x;
+        rect["y"] = rectangles[i].y;
+        rect["width"] = rectangles[i].width;
+        rect["height"] = rectangles[i].height;
+
+        data["rect_" + std::to_string(i)] = rect;
     }
 
     if (data.isNull())
